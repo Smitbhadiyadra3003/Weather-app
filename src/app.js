@@ -1,8 +1,8 @@
 const path = require('path')
 const express = require('express')
 const hbs = require('hbs')
-const geocode = require('./utils/geocode')
-const forecast = require('./utils/forecast')
+const geocode = require('./utils/geocode');
+const forecast = require('./utils/forecast');
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -43,26 +43,34 @@ app.get('/help', (req, res) => {
 })
 
 app.get('/weather', (req, res) => {
-    if (!req.query.query) {
+    if (!req.query.address) {
         return res.send({
             error: 'You must provide an qurey!'
         })
     }
 
-     return res.send({ error })
-        })
-           
+    console.log(req.query.address);
+    // geocode(req.query.address, (error, { latitude, longitude, location }) => {
+    //     if (error) {
+    //         return console.log(error)
+    //     }
+    forecast(21.1702,72.8311, (error, forecastData) => {
+        if (error) {
+            return res.send({ error })
+        }
 
-        forecast(latitude, longitude, (error, forecastData) => {
-            if (error) {
-                return res.send({ error })
-            }
-
-            res.send({
-                forecast: forecastData,
-                address: req.query.address
-            })
+        res.send({
+            forecast: forecastData,
+            location,
+            query: req.query.address
         })
+    })
+     
+//  })
+
+})
+
+
 
 
 app.get('/products', (req, res) => {
